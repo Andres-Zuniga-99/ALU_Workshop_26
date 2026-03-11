@@ -1,0 +1,59 @@
+##========================================================
+## Nexys A7-100T XDC for ALU_Design
+## Board: XC7A100T-1CSG324C
+##========================================================
+
+##----------------------------
+## Clock
+## 100 MHz onboard oscillator
+##----------------------------
+set_property -dict { PACKAGE_PIN E3 IOSTANDARD LVCMOS33 } [get_ports { clk }];
+create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports {clk}]
+
+##----------------------------
+## Reset button
+## Using center button as rst
+##----------------------------
+set_property -dict { PACKAGE_PIN N17 IOSTANDARD LVCMOS33 } [get_ports { rst }]
+
+##----------------------------
+## operand1[3:0] -> SW0..SW3
+##----------------------------
+set_property -dict { PACKAGE_PIN J15 IOSTANDARD LVCMOS33 } [get_ports { operand1[0] }]
+set_property -dict { PACKAGE_PIN L16 IOSTANDARD LVCMOS33 } [get_ports { operand1[1] }]
+set_property -dict { PACKAGE_PIN M13 IOSTANDARD LVCMOS33 } [get_ports { operand1[2] }]
+set_property -dict { PACKAGE_PIN R15 IOSTANDARD LVCMOS33 } [get_ports { operand1[3] }]
+
+##----------------------------
+## operand2[3:0] -> SW4..SW7
+##----------------------------
+set_property -dict { PACKAGE_PIN R17 IOSTANDARD LVCMOS33 } [get_ports { operand2[0] }]
+set_property -dict { PACKAGE_PIN T18 IOSTANDARD LVCMOS33 } [get_ports { operand2[1] }]
+set_property -dict { PACKAGE_PIN U18 IOSTANDARD LVCMOS33 } [get_ports { operand2[2] }]
+set_property -dict { PACKAGE_PIN R13 IOSTANDARD LVCMOS33 } [get_ports { operand2[3] }]
+
+##----------------------------
+## operator[3:0] -> SW8..SW11
+## Note: SW8 and SW9 are 1.8V on Digilent master XDC
+##----------------------------
+set_property -dict { PACKAGE_PIN T8  IOSTANDARD LVCMOS18 } [get_ports { operator[0] }]
+set_property -dict { PACKAGE_PIN U8  IOSTANDARD LVCMOS18 } [get_ports { operator[1] }]
+set_property -dict { PACKAGE_PIN R16 IOSTANDARD LVCMOS33 } [get_ports { operator[2] }]
+set_property -dict { PACKAGE_PIN T13 IOSTANDARD LVCMOS33 } [get_ports { operator[3] }]
+
+##----------------------------
+## result[4:0] -> LED0..LED4
+##----------------------------
+set_property -dict { PACKAGE_PIN H17 IOSTANDARD LVCMOS33 } [get_ports { result[0] }]
+set_property -dict { PACKAGE_PIN K15 IOSTANDARD LVCMOS33 } [get_ports { result[1] }]
+set_property -dict { PACKAGE_PIN J13 IOSTANDARD LVCMOS33 } [get_ports { result[2] }]
+set_property -dict { PACKAGE_PIN N14 IOSTANDARD LVCMOS33 } [get_ports { result[3] }]
+set_property -dict { PACKAGE_PIN R18 IOSTANDARD LVCMOS33 } [get_ports { result[4] }]
+
+##----------------------------
+## Flags -> LED5..LED8
+##----------------------------
+set_property -dict { PACKAGE_PIN V17 IOSTANDARD LVCMOS33 } [get_ports { carry }]
+set_property -dict { PACKAGE_PIN U17 IOSTANDARD LVCMOS33 } [get_ports { borrow }]
+set_property -dict { PACKAGE_PIN U16 IOSTANDARD LVCMOS33 } [get_ports { zero }]
+set_property -dict { PACKAGE_PIN V16 IOSTANDARD LVCMOS33 } [get_ports { overflow }]
