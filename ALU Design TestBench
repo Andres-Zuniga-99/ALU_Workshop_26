@@ -1,0 +1,170 @@
+`timescale 1ns / 1ps
+
+module ALU_Design_tb;
+
+    // Inputs
+    reg clk;
+    reg rst;
+    reg [3:0] operand1;
+    reg [3:0] operand2;
+    reg [3:0] operator;
+
+    // Outputs
+    wire [4:0] result;
+    wire carry;
+    wire borrow;
+    wire zero;
+    wire overflow;
+
+    // Instantiate the Unit Under Test (UUT)
+    ALU_Design uut (
+        .clk(clk),
+        .rst(rst),
+        .operand1(operand1),
+        .operand2(operand2),
+        .operator(operator),
+        .result(result),
+        .carry(carry),
+        .borrow(borrow),
+        .zero(zero),
+        .overflow(overflow)
+    );
+
+    // Clock generation
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;                              //5ns change, so 10ns clock cycle
+    end
+
+    // Test sequence
+    initial begin
+        // Initialize inputs to all zeroes
+        rst = 0;
+        operand1 = 4'b0000;
+        operand2 = 4'b0000;
+        operator = 4'b0000;
+
+        // -------------------------
+        // AND
+        // 1010 & 1100 = 1000
+        // -------------------------
+        #10;
+        operand1 = 4'b1010;
+        operand2 = 4'b1100;
+        operator = 4'b0000;
+
+        // -------------------------
+        // OR
+        // 1010 | 1100 = 1110
+        // -------------------------
+        #10;
+        operand1 = 4'b1010;
+        operand2 = 4'b1100;
+        operator = 4'b0001;
+
+        // -------------------------
+        // XOR
+        // 1010 ^ 1100 = 0110
+        // -------------------------
+        #10;
+        operand1 = 4'b1010;
+        operand2 = 4'b1100;
+        operator = 4'b0010;
+
+        // -------------------------
+        // NOT
+        // ~1010 = 0101
+        // -------------------------
+        #10;
+        operand1 = 4'b1010;
+        operand2 = 4'b0000;
+        operator = 4'b0011;
+
+        // -------------------------
+        // ADD without carry
+        // 0011 + 0010 = 00101
+        // -------------------------
+        #10;
+        operand1 = 4'b0011;
+        operand2 = 4'b0010;
+        operator = 4'b0100;
+
+        // -------------------------
+        // ADD with carry
+        // 1111 + 0001 = 10000
+        // -------------------------
+        #10;
+        operand1 = 4'b1111;
+        operand2 = 4'b0001;
+        operator = 4'b0100;
+
+        // -------------------------
+        // ADD with signed overflow
+        // 0111 + 0011 = 1010
+        // 7 + 3 overflows in 4-bit signed
+        // -------------------------
+        #10;
+        operand1 = 4'b0111;
+        operand2 = 4'b0011;
+        operator = 4'b0100;
+
+        // -------------------------
+        // SUB without borrow
+        // 0110 - 0011 = 00011
+        // -------------------------
+        #10;
+        operand1 = 4'b0110;
+        operand2 = 4'b0011;
+        operator = 4'b0101;
+
+        // -------------------------
+        // SUB with borrow
+        // 0011 - 0101 -> borrow = 1
+        // -------------------------
+        #10;
+        operand1 = 4'b0011;
+        operand2 = 4'b0101;
+        operator = 4'b0101;
+
+        // -------------------------
+        // SUB with signed overflow
+        // 0111 - 1111
+        // 7 - (-1) = 8, overflow in 4-bit signed
+        // -------------------------
+        #10;
+        operand1 = 4'b0111;
+        operand2 = 4'b1111;
+        operator = 4'b0101;
+
+        // -------------------------
+        // Shift right
+        // 1000 >> 1 = 0100
+        // -------------------------
+        #10;
+        operand1 = 4'b1000;
+        operand2 = 4'b0001;
+        operator = 4'b0110;
+
+        // -------------------------
+        // Shift left
+        // 0011 << 2 = 01100
+        // -------------------------
+        #10;
+        operand1 = 4'b0011;
+        operand2 = 4'b0010;
+        operator = 4'b0111;
+
+        // -------------------------
+        // Zero flag check with XOR
+        // 1010 ^ 1010 = 0000
+        // -------------------------
+        #10;
+        operand1 = 4'b1010;
+        operand2 = 4'b1010;
+        operator = 4'b0010;
+
+        // End simulation
+        #20;
+    end
+
+endmodule
