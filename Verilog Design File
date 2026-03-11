@@ -1,0 +1,83 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: SJSU
+// Engineer: Andres Zuniga
+// 
+// Create Date: 02/19/2026 06:07:56 PM
+// Design Name: SJSU ALU
+// Module Name: ALU_Design
+// Description: A basic ALU for explaining basic Computer Architecture concepts
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module ALU_Design(
+    input clk, rst,
+    input [3:0] operand1, operand2, operator,
+    output reg [4:0] result,
+    output reg carry, borrow, zero, overflow
+    );
+    
+    always @(*) begin
+    overflow = 1'b0;
+    zero = 1'b0;
+    result = 5'd0;
+    carry = 1'b0;
+    borrow = 1'b0;
+                        //intializing the flags and result to prevent inferred latches
+    case(operator)
+    4'b0000: begin
+        result = {1'b0, operand1 & operand2};   //bitwise AND operator
+        end
+    4'b0001: begin
+        result = {1'b0, operand1 | operand2};   //bitwise OR operator
+        end
+    4'b0010: begin
+        result = {1'b0, operand1 ^ operand2};   //bitwise XOR operator
+        end
+    4'b0011: begin
+        result = {1'b0, ~operand1};             //bitwise NOT operator
+        end
+    4'b0100: begin
+        result = {1'b0, operand1} + {1'b0, operand2};                               //ADD operation
+        carry = result[4];                                                          //Carry flag update with MSB of result
+        overflow = (~(operand1[3] ^ operand2[3])) & (operand1[3] ^ result[3]);      //Overflow flag update with Bitwise
+        end                                                                         //AND operator to compare signs
+    4'b0101: begin
+        result = {1'b0, operand1} - {1'b0, operand2};                               //SUB operation
+        borrow = (operand1 < operand2);                                             //Borrow flag update with less than operator comparison
+        overflow = (operand1[3] ^ operand2[3]) & (operand1[3] ^ result[3]);         //Overflow flag update with sign comparison operation
+        end
+    4'b0110: begin
+        result = {1'b0, operand1} >> operand2;                                      //Logic shift right
+        end
+    4'b0111: begin
+        result = {1'b0, operand1} << operand2;                                      //Logic shift left
+        end
+        
+    default: begin
+    result = 5'd0;                                                                  //set default conditions in case no cases
+    carry = 1'b0;
+    zero = 1'b0;
+    overflow = 1'b0;
+    borrow = 1'b0;
+    end
+    
+    endcase
+    
+    zero = (result == 0);                                                           //set Zero flag based on if result is zero
+    
+    end
+
+//Unused Sequential Block put in to show where a sequential block would go for pipelining   
+//    always@ (posedge clk or posedge rst)begin
+//    if(rst)begin
+    //reset behavior if rst is turned on
+//    end
+//    else begin
+    //pass values through to next section of pipeline
+//    end
+//end
+endmodule
